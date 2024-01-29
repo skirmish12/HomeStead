@@ -1,0 +1,25 @@
+{% extends "posApp/base.html" %} {% block pageContent %}
+
+  <div class="container mt-5">
+    <h2>Create Supplier</h2>
+    <form method="post" action="{% url 'create_supplier' %}">
+      {% csrf_token %}
+      <label for="supplier_name">Supplier Name:</label>
+      <input type="text" name="supplier_name" required>
+      
+      <label for="item_name">Item Name:</label>
+      <input type="text" name="item_name" required>
+
+      <label for="item_number">Item Number:</label>
+      <input type="text" name="item_number" required>
+
+      <label for="invoice_number">Invoice Number:</label>
+      <input type="text" name="invoice_number" required>
+
+      <label for="price">Price:</label>
+      <input type="text" name="price" required>
+
+      <button type="submit">Create Supplier</button>
+    </form>
+  </div>
+{% endblock %}

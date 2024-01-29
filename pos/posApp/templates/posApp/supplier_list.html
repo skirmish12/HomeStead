@@ -1,0 +1,72 @@
+{% extends "posApp/base.html" %} {% block pageContent %}
+
+  <div class="container mt-4">
+    <h2>{{ page_title }}</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Supplier Name</th>
+          <th scope="col">Item Name</th>
+          <th scope="col">Item Number</th>
+          <th scope="col">Price</th>
+          <th scope="col">Actions</th>  <!-- New column for actions -->
+        </tr>
+      </thead>
+      <tbody>
+        {% for supplier in suppliers %}
+          <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ supplier.name }}</td>
+            <td>{{ supplier.item_name }}</td>
+            <td>{{ supplier.item_number }}</td>
+            <td>{{ supplier.price }}</td>
+            <td>
+                <button class="mdc-button mdc-button--raised p-1 icon-button filled-button--danger mdc-ripple-upgraded delete-data" type="button" data-id="{{ supplier.id }}" data-name="{{ supplier.name }}" title="Delete">
+                    <i class="material-icons mdc-button__icon">deleteoutline</i>
+                </button>
+              <!-- Add delete and edit links or buttons -->
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %} {% block ScriptBlock %}
+<script>
+  $(function() {
+      $('.delete-data').click(function() {
+          _conf("Are you sure to delete <b>" + $(this).attr('data-code') + "</b> Transaction record?", "delete_supplier", [$(this).attr('data-id')]);
+      });
+  });
+
+
+  function delete_supplier($id) {
+    start_loader();
+    $.ajax({
+        headers: {
+            "X-CSRFToken": '{{csrf_token}}'
+        },
+        url: "{% url 'delete-supplier' %}",
+        method: "POST",
+        data: {
+            id: $id
+        },
+        dataType: "json",
+        error: err => {
+            console.log(err);
+            alert_toast("An error occurred.", 'error');
+            end_loader();
+        },
+        success: function(resp) {
+            if (typeof resp == 'object' && resp.status == 'success') {
+                location.reload();
+            } else {
+                alert_toast("An error occurred.", 'error');
+                end_loader();
+            }
+        }
+    });
+}
+</script>
+{% endblock ScriptBlock %}
